@@ -28,7 +28,7 @@ import net.bytebuddy.utility.RandomString;
  **/
 @Slf4j
 @RestController
-public class MqttPublishController {
+public class MqttPublishController implements MqttPublisherRest {
 	@Resource
 	private MqttGateway mqttGateWay;
 
@@ -36,12 +36,20 @@ public class MqttPublishController {
 	@Qualifier("inClientFactory")
 	private MqttPahoClientFactory mqttClientFactory;
 
+	/* (non-Javadoc)
+	 * @see com.huawen.mqtt.controller.MqttPublisherRest#send(com.huawen.mqtt.bean.MyMessage)
+	 */
+	@Override
 	@PostMapping("/send")
 	public String send(@RequestBody MyMessage myMessage) {
 		// 发送消息到指定主题
 		mqttGateWay.sendToMqtt(myMessage.getTopic(), 1, myMessage.getContent());
 		return "send topic: " + myMessage.getTopic() + ", message : " + myMessage.getContent();
 	}
+	/* (non-Javadoc)
+	 * @see com.huawen.mqtt.controller.MqttPublisherRest#send(java.lang.String, java.lang.String)
+	 */
+	@Override
 	@GetMapping("/send")
 	public String send(@RequestParam String topic, 
 			@RequestParam String message) {
