@@ -15,6 +15,8 @@ import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
+import com.huawen.mqtt.inter.MqttGateway;
+
 import javax.annotation.Resource;
 
 /**
@@ -27,6 +29,9 @@ import javax.annotation.Resource;
 public class MqttInBoundConfiguration {
     @Resource
     private MqttConfiguration mqttProperties;
+    
+	@Resource
+	private MqttGateway mqttGateWay;
 
     //==================================== 消费消息==========================================//
 
@@ -108,6 +113,21 @@ public class MqttInBoundConfiguration {
             String topic = (String) message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC);
             log.info("topic:" + topic);
             log.info("----------------------");
+            if("v2/action/command".equals(topic) ) {
+            	String content = message.getPayload().toString();
+            	int nstart = content.indexOf("<reply>");
+            	int nend = content.indexOf("</reply>");
+            	if(nstart >0 && nend > nstart) {
+            		String replyTopic = content.substring(nstart+"<reply>".length(), nend);
+            		log.info("send to topic:{}",replyTopic);
+            		mqttGateWay.sendToMqtt(replyTopic, "reply to replyTopic");
+            		
+            		
+            		
+            	}else {
+            		log.info("message format is error");
+            	}
+            }
         };
     }
 

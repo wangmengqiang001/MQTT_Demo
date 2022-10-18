@@ -7,15 +7,13 @@ server:
 #mqtt properties
 mqtt:
   uris:
-    - tcp://guizhou:1883
-  clientId: mqtt_test
+    - tcp://127.0.0.1:1883
+  clientId: mqtt_test1
   topics:
     - demo
     - test
-    - v2/action/command
-    - v2/+/response
   username: admin
-  password: public
+  password: 123456
   timeout: 30
   keepalive: 60
   qos: 1

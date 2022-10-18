@@ -46,6 +46,7 @@ public class MqttOutBoundConfiguration {
     @Bean
     public MqttPahoClientFactory outClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
+        
         String[] uris = mqttProperties.getUris();
         MqttConnectOptions options = new MqttConnectOptions();
         options.setServerURIs(uris);
@@ -57,6 +58,8 @@ public class MqttOutBoundConfiguration {
         options.setCleanSession(false);
         //设置断开后重新连接
         options.setAutomaticReconnect(true);
+        options.setMaxInflight(200); // 缺省为10，当并发超过10时，出现异常："正在进行过多的发布 (32202) "
+        
         factory.setConnectionOptions(options);
         return factory;
     }
