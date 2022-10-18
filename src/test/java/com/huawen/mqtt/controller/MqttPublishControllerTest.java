@@ -26,8 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
 import com.huawen.mqtt.inter.MqttGateway;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +37,8 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest
 class MqttPublishControllerTest {
 	
-	 @Autowired
-     WebApplicationContext wac;
+//	 @Autowired
+//     WebApplicationContext wac;
 	 
 	@Autowired
 	MockMvc mvc;

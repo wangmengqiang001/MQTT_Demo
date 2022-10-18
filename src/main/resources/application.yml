@@ -1,6 +1,10 @@
 spring:
   application:
-    name: MQTT-DEMO
+    name: mqtt-messager
+  cloud:
+    nacos:
+      discovery:
+        server-addr: guizhou:8848
 server:
   port: 8989
 
