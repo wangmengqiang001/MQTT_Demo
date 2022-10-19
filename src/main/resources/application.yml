@@ -5,6 +5,16 @@ spring:
     nacos:
       discovery:
         server-addr: guizhou:8848
+dubbo:
+  application:
+    name: mqtt-messager
+  #协议配置端口
+  protocol:
+    name: dubbo
+    port: 20882
+  registry:
+    address: nacos://guizhou:8848
+    
 server:
   port: 8989
 

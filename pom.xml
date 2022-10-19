@@ -101,6 +101,29 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <version>2.7.5</version>
+        </dependency>
+
+ <!--        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>2.7.5</version>
+        </dependency> -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-registry-nacos</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba.nacos</groupId>
+                    <artifactId>nacos-client</artifactId>
+                </exclusion>
+            </exclusions>
+            <version>2.7.5</version>
+        </dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
