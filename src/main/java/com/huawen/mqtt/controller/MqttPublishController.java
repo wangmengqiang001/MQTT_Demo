@@ -28,7 +28,7 @@ import net.bytebuddy.utility.RandomString;
  **/
 @Slf4j
 @RestController
-public class MqttPublishController implements MqttPublisherRest {
+public class MqttPublishController /*implements MqttPublisherRest*/ {
 	@Resource
 	private MqttGateway mqttGateWay;
 
@@ -39,7 +39,7 @@ public class MqttPublishController implements MqttPublisherRest {
 	/* (non-Javadoc)
 	 * @see com.huawen.mqtt.controller.MqttPublisherRest#send(com.huawen.mqtt.bean.MyMessage)
 	 */
-	@Override
+	//@Override
 	@PostMapping("/send")
 	public String send(@RequestBody MyMessage myMessage) {
 		// 发送消息到指定主题
@@ -49,7 +49,7 @@ public class MqttPublishController implements MqttPublisherRest {
 	/* (non-Javadoc)
 	 * @see com.huawen.mqtt.controller.MqttPublisherRest#send(java.lang.String, java.lang.String)
 	 */
-	@Override
+	//@Override
 	@GetMapping("/send")
 	public String send(@RequestParam String topic, 
 			@RequestParam String message) {
@@ -57,8 +57,7 @@ public class MqttPublishController implements MqttPublisherRest {
 		//start Thread to wait message
 		String url="tcp://guizhou:1883";
 		String clientId="xxx_xx123"+RandomString.make(10);
-
-		log.info("/send controller, this:{}",this);
+		
 		try {
 			IMqttClient clientInstance = mqttClientFactory.getClientInstance(url, clientId);
 			Object signalLock = new Object(); 
@@ -71,8 +70,7 @@ public class MqttPublishController implements MqttPublisherRest {
 			clientInstance.connect();
 			clientInstance.subscribe(replyTopic, new ResponseMessageListener(signalLock));
 
-
-			log.info("gateway instance:{}",mqttGateWay.hashCode());
+			
 			mqttGateWay.sendToMqtt(topic, 1, message+resTopic);
 
 			long start = System.currentTimeMillis();
