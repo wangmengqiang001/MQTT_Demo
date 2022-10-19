@@ -18,6 +18,7 @@ import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
@@ -34,11 +35,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AutoConfigureMockMvc // 自动配置MockMvc
-@SpringBootTest
+@SpringBootTest(classes=com.huawen.MqttDemoApplication.class)
 class MqttPublishControllerTest {
 	
-//	 @Autowired
-//     WebApplicationContext wac;
+
 	 
 	@Autowired
 	MockMvc mvc;

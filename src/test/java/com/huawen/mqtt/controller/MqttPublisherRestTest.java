@@ -1,6 +1,7 @@
 package com.huawen.mqtt.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -12,21 +13,29 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Resource;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.huawen.mqtt.bean.MyMessage;
 
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
-@SpringBootTest
 
+
+
+@SpringBootTest(classes=com.huawen.MqttDemoApplication.class, 
+properties= {"spring.main.allow-bean-definition-overriding=true"})
+@ActiveProfiles("test")
+@EnableFeignClients
 class MqttPublisherRestTest {
 	
 	@Resource 
 	private MqttPublisherRest publisher;
+	
+
 
 	@Test
 	void testSendMyMessage() {
@@ -46,6 +55,7 @@ class MqttPublisherRestTest {
 	@Test
 	void testSendStringString() {
 		assertNotNull(publisher);
+
 	}
 	@Test
 	void testSendOnce() throws Exception {
@@ -55,11 +65,8 @@ class MqttPublisherRestTest {
 		String message="go on " + respId;
 		
 		
-		
 		String value = publisher.send(topic,message );
-
-				
-				assertEquals("send topic: " + topic + ", message : " + message,
+        assertEquals("send topic: " + topic + ", message : " + message,
 						value);
 	}
 	@Test
