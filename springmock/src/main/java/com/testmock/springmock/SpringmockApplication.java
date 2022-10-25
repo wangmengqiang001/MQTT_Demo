@@ -10,7 +10,8 @@ import org.springframework.web.client.RestTemplate;
 
 @EnableFeignClients
 @SpringBootApplication
-@ComponentScan({"com.huawen.mqtt.*"})
+@ComponentScan({"com.huawen.mqtt.*",
+	"com.testmock.*","com.redishash.*"})
 public class SpringmockApplication {
 
 	public static void main(String[] args) {

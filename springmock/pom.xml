@@ -114,6 +114,10 @@
             </exclusions> -->
             <version>2.7.5</version>
         </dependency>
+        <dependency>
+        	<groupId>org.aspectj</groupId>
+        	<artifactId>aspectjweaver</artifactId>
+        </dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

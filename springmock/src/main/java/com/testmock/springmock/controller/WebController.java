@@ -9,6 +9,8 @@ public class WebController {
 
    // @ResponseBody
 	//@Rest
+
+	
     @RequestMapping("/home")
     public String home(){
         return "Hello, this is homepage";
