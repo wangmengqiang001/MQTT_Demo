@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.huawen</groupId>
-	<artifactId>mqtt-demo</artifactId>
+	<artifactId>mqtt_messager</artifactId>
 	<version>0.0.1</version>
-	<name>mqtt-demo</name>
+	<name>mqtt_messager</name>
 	<description>Boot with MQTT Demo</description>
 	<properties>
 		<java.version>1.8</java.version>
