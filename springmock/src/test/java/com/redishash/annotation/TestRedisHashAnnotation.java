@@ -1,48 +1,50 @@
 package com.redishash.annotation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.stereotype.Component;
 
-import com.redishash.aop.IHashCache;
+import com.redishash.aop.DummyHashCache;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest(classes=com.testmock.springmock.SpringmockApplication.class)
- class TestRedisHashAnnotation {
+public class TestRedisHashAnnotation {
 	@Autowired
 	InnerRedis inner;
-	@MockBean
-	IHashCache hashCache;
+	
+/*	@MockBean
+	IHashCache hashCache;*/
+	
+	@Autowired
+	DummyHashCache dummyCache;
+	
 	
 	@Component
-	static class InnerRedis{
+	public static class InnerRedis{
 		
-		@RedisHGet(hashKey = "", key = "")
+		@RedisHGet(hashKey = "a", key = "a")
 		public String findByKey(String key) {
 			return key+"_" + System.currentTimeMillis();
 		}
 		
-		@RedisHPut(hashKey = "", key = "")
+		@RedisHPut(hashKey = "b", key = "a")
 		public void updateBykey(String key, String value) {
 			
 		}
 		
-		@RedisHDel(hashKey = "", key = "")
+		@RedisHDel(hashKey = "n", key = "a")
 		public void delByKey(String key) {
 			
 		}
 		
 	}
-
+/*
 	@Test
 	void testHGet() throws NoSuchMethodException, SecurityException {
 		
@@ -72,16 +74,65 @@ import lombok.extern.slf4j.Slf4j;
 	@Test
 	void testHDel() throws NoSuchMethodException, SecurityException {
 		
-		assertNotNull(inner);
+		assertNotNull(inner);		
 		Method methodDel = inner.getClass().getMethod("delByKey", String.class);
 		assertNotNull(methodDel);
 		Annotation[] annotations = methodDel.getAnnotations();
 		
 		assertNotNull(annotations);
-		log.info("annotations : {}",annotations.toString());
+		assertTrue(annotations.length > 0 );
+		
+		log.info("annotations : {}",annotations.length);
 		
 		RedisHDel annoHDel = methodDel.getAnnotation(RedisHDel.class);
 		assertNotNull(annoHDel);
+		
+		
+	}*/
+	@Test
+	void testHDelInvoke() {
+		
+		assertNotNull(inner);
+		//.evictObject("a", "niu")
+		//when(hashCache.evictObject("a", "niu")).thenThrow(new Exception("Hello"));
+		//Mockito.doNothing().when(hashCache).evictObject("a", "niu");
+		
+		inner.delByKey("a");
+		
+	
+		
+		
+	}
+	@Test
+	void testHGelInvoke() throws InterruptedException {
+		
+		assertNotNull(inner);
+		//.evictObject("a", "niu")
+		//when(hashCache.evictObject("a", "niu")).thenThrow(new Exception("Hello"));
+		//Mockito.doNothing().when(hashCache).evictObject("a", "niu");
+		
+		String value = inner.findByKey("abc");
+		log.info("key: abc, value:{}",value);
+		assertNotNull(value);
+		Thread.sleep(2000);
+		
+		String val = inner.findByKey("abc");
+		assertNotNull(val);
+		log.info("key: abc, value:{}",val);
+		assertEquals(value,val);
+	
+		
+		
+	}
+	@Test
+	void testHPutInvoke() {
+		
+		assertNotNull(inner);
+		//.evictObject("a", "niu")
+		//when(hashCache.evictObject("a", "niu")).thenThrow(new Exception("Hello"));
+		//Mockito.doNothing().when(hashCache).evictObject("a", "niu");
+		
+		inner.updateBykey("a", "xxx");
 		
 	}
 
