@@ -56,14 +56,19 @@ public class RedisHashAspect {
             // 获取RedisCache注解
             RedisHGet cache = method.getAnnotation( RedisHGet.class);
             if (cache != null && cache.read()) {
+            	
                 // 查询操作
                 String key = cache.key();
                 String hashKey = cache.hashKey(); //parseKey(cache.hashKey(), method, point.getArgs());
                 Object obj = cacher.locateObject(key, hashKey);
                 if (obj == null) {
-                    obj = point.proceed();
+                	log.info("未找到该对象，执行方法: {}",method.getName());
+                    obj = point.proceed(point.getArgs());
                     if (obj != null) {
+                    	log.info("执行方法:{} 完成, 写入缓存key:{},hashKey:{},val:{}",
+                    			method.getName(),key,hashKey,obj);
                     	cacher.putObject(key,hashKey,obj);
+                    	
          
                     }
                 }
@@ -87,6 +92,8 @@ public class RedisHashAspect {
 
 	@After("cutpointHDel()")
 	public void evict(JoinPoint point) {
+		log.info("cutpointHDel :{}",point);
+		
 		Method method = ((MethodSignature) point.getSignature()).getMethod();
 		RedisHDel cache = method.getAnnotation(RedisHDel.class);
 		String key = cache.key();
