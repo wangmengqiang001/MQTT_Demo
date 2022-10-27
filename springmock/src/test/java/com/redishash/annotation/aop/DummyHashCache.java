@@ -14,18 +14,28 @@ import lombok.extern.slf4j.Slf4j;
 public class DummyHashCache implements IHashCache {
 	
 	private Map<String,Object> mapCache = Maps.newConcurrentMap();
+	
+	protected int cacheSize() {
+		return mapCache.size();
+	}
+	protected int cacheSize(String cacheName) {
+		if(mapCache.containsKey(cacheName)) {
+			return ((Map<String,Object>)mapCache.get(cacheName)).size();
+		}
+		return -1; //no cache
+	}
 
 	@Override
-	public void putObject(String key, String hashKey, Object obj) {
+	public void putObject(String cacheName, String hashKey, Object obj) {
 		// TODO Auto-generated method stub
-		log.info("在进行修改后，更新cache中key={},hashKey={}中的值",key,hashKey);
-		if(!mapCache.containsKey(key)) {
+		log.info("在进行修改后，更新cache中key={},hashKey={}中的值",cacheName,hashKey);
+		if(!mapCache.containsKey(cacheName)) {
 			Map<String,Object> hkeys = Maps.newConcurrentMap();
 			hkeys.put(hashKey, obj);
 			
-			mapCache.put(key, hkeys);
+			mapCache.put(cacheName, hkeys);
 		}else {
-			Map<String,Object> hkeys = (Map<String,Object>)mapCache.get(key);
+			Map<String,Object> hkeys = (Map<String,Object>)mapCache.get(cacheName);
 			hkeys.put(hashKey, obj);
 		}
 		
@@ -33,21 +43,21 @@ public class DummyHashCache implements IHashCache {
 	}
 
 	@Override
-	public Object locateObject(String key, String hashKey) {
-		log.info("在执行查询前，查看cache中是否有key={},hashKey={}的对象 ",key,hashKey);
-		if(!mapCache.containsKey(key)){
+	public Object locateObject(String cacheName, String hashKey) {
+		log.info("在执行查询前，查看cache中是否有key={},hashKey={}的对象 ",cacheName,hashKey);
+		if(!mapCache.containsKey(cacheName)){
 			return null;
 		}else {
-			Map<String, Object> hkeys = (Map<String, Object>) mapCache.get(key);
+			Map<String, Object> hkeys = (Map<String, Object>) mapCache.get(cacheName);
 			return hkeys.get(hashKey);
 		}
 		
 	}
 
 	@Override
-	public void evictObject(String key, String hashKey) {
-		log.info("删除 object by key: {}, hashKey: {}",key,hashKey);
-		mapCache.computeIfPresent(key, (k,v) -> {
+	public void evictObject(String cacheName, String hashKey) {
+		log.info("删除 object by key: {}, hashKey: {}",cacheName,hashKey);
+		mapCache.computeIfPresent(cacheName, (k,v) -> {
 			Map<String,Object> hKeys = (Map<String, Object>) v;
 			hKeys.remove(hashKey);
 			return hKeys.size() > 0?v:null;});
