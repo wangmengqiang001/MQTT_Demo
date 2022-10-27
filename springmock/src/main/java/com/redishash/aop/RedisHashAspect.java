@@ -31,11 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Aspect
 public class RedisHashAspect {
 	
-	//public Map<String,Object> cacheMap = Maps.newConcurrentMap();
 	
-	/*@Resource
-	RedisTemplate redisTemplate;
-	*/
 	@Resource
 	IHashCache cacher;
 	
@@ -62,16 +58,16 @@ public class RedisHashAspect {
             if (cache != null && cache.read()) {
             	
                 // 查询操作
-                String key = cache.key();
+                String cacheName = cache.cache();
                 String hashKey = parseKey(cache.hashKey(), method, point.getArgs());
-                Object obj = cacher.locateObject(key, hashKey);
+                Object obj = cacher.locateObject(cacheName, hashKey);
                 if (obj == null) {
-                	log.info("未找到该对象，执行方法: {}",method.getName());
+                	log.debug("未找到该对象，执行方法: {}",method.getName());
                     obj = point.proceed(point.getArgs());
                     if (obj != null) {
-                    	log.info("执行方法:{} 完成, 写入缓存key:{},hashKey:{},val:{}",
-                    			method.getName(),key,hashKey,obj);
-                    	cacher.putObject(key,hashKey,obj);
+                    	log.debug("执行方法:{} 完成, 写入缓存cacheName:{},hashKey:{},val:{}",
+                    			method.getName(),cacheName,hashKey,obj);
+                    	cacher.putObject(cacheName,hashKey,obj);
                     	
          
                     }
@@ -88,9 +84,9 @@ public class RedisHashAspect {
 	public void update(JoinPoint point) {
 		Method method = ((MethodSignature) point.getSignature()).getMethod();
 		RedisHPut cache = method.getAnnotation(RedisHPut.class);
-		String key = cache.key();
+		String cacheName = cache.cache();
 		String hashKey = parseKey(cache.hashKey(), method, point.getArgs());
-		cacher.putObject(key,hashKey,point.getArgs()[0]);
+		cacher.putObject(cacheName,hashKey,point.getArgs()[0]);
 		// baseHashRedisTemplate.remove(key, hashKey);
 	}
 
@@ -100,9 +96,9 @@ public class RedisHashAspect {
 		
 		Method method = ((MethodSignature) point.getSignature()).getMethod();
 		RedisHDel cache = method.getAnnotation(RedisHDel.class);
-		String key = cache.key();
+		String cacheName = cache.cache();
 		String hashKey = parseKey(cache.hashKey(), method, point.getArgs());
-		cacher.evictObject(key,hashKey);
+		cacher.evictObject(cacheName,hashKey);
 		// baseHashRedisTemplate.remove(key, hashKey);
 	}
 

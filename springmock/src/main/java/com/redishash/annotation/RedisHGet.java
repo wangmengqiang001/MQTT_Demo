@@ -14,9 +14,9 @@ import java.lang.annotation.Target;
 public @interface RedisHGet{
 
 	 /**
-     * 键名
+     * Cache名
      */
-    String key();
+    String cache();
 
     /**
      * Hash键名（支持Spring EL表达式）

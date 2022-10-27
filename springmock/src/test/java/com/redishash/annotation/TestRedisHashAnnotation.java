@@ -34,17 +34,17 @@ public class TestRedisHashAnnotation {
 	@Component
 	public static class InnerRedis{
 		
-		@RedisHGet(hashKey = "#key", key = "a")
+		@RedisHGet(hashKey = "#key", cache = "a")
 		public String findByKey(String key) {
 			return key+"_" + System.currentTimeMillis();
 		}
 		
-		@RedisHPut(hashKey = "#key", key = "a")
+		@RedisHPut(hashKey = "#key", cache = "a")
 		public void updateBykey(String key, String value) {
 			
 		}
 		
-		@RedisHDel(hashKey = "#key", key = "a")
+		@RedisHDel(hashKey = "#key", cache = "a")
 		public void delByKey(String key) {
 			
 		}
