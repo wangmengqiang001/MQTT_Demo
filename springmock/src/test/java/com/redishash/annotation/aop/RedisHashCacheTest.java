@@ -67,11 +67,11 @@ class RedisHashCacheTest {
 	
 	@Test
 	void testPutObject() {
-		String[] listProps = {"directon","speed","shape"};
-		List<String> pros = Lists.newArrayList(listProps);
+		
+		List<String> pros = Lists.newArrayList("directon","speed","shape");
 		InnderData data = InnderData.builder().deviceId("abc")
 				.metrics("abcd"+"_" + System.currentTimeMillis()).value(200)
-				.props(Lists.newArrayList(listProps)).build();
+				.props(pros).build();
 		
 		inner.updateBykey(data);
 	}
