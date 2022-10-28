@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.google.common.collect.Lists;
 import com.redishash.annotation.RedisHDel;
 import com.redishash.annotation.RedisHGet;
+import com.redishash.annotation.RedisHMPut;
 import com.redishash.annotation.RedisHPut;
 
 
@@ -62,6 +63,26 @@ class RedisHashCacheTest {
 		public void delByKey(InnderData innerData) {
 			
 		}
+		@RedisHMPut(hashKey = "#resultVal.deviceId", cache = "energy:iot:object_model:info_example")
+		public List<InnderData> queryList(){
+			List<InnderData> result = Lists.newArrayList();
+			for(int n=1; n<=20; n++) {
+				String deviceId = "aI_"+n;
+			result.add( InnderData.builder().deviceId(deviceId)
+					.metrics(deviceId+"_" + System.currentTimeMillis()).value(100+n).build());
+			}
+			return result;
+		}
+		@RedisHMPut(hashKey = "#resultal.deviceId", cache = "energy:iot:object_model:info_example")
+		public List<InnderData> queryList2(){
+			List<InnderData> result = Lists.newArrayList();
+			for(int n=1; n<=20; n++) {
+				String deviceId = "aI_"+n;
+			result.add( InnderData.builder().deviceId(deviceId)
+					.metrics(deviceId+"_" + System.currentTimeMillis()).value(100+n).build());
+			}
+			return result;
+		}
 		
 	}
 	
@@ -100,8 +121,19 @@ class RedisHashCacheTest {
 		InnderData data = InnderData.builder().deviceId("abc").build();
 		inner.delByKey(data);
 	}
-	
-	
+	@Test
+	void testQueryList() {
+		List<InnderData> x = inner.queryList();
+		
+		assertEquals(20,x.size());
+	}
+	@Test
+	void testQueryList2() {
+		List<InnderData> x = inner.queryList2();
+		
+		assertEquals(20,x.size());
+	}
+
 	
 
 }

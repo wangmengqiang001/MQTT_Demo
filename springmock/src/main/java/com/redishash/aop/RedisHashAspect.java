@@ -2,7 +2,9 @@ package com.redishash.aop;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -10,6 +12,7 @@ import javax.annotation.Resource;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -20,11 +23,13 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import com.alibaba.nacos.client.utils.JSONUtils;
 import com.google.common.collect.Maps;
 import com.redishash.annotation.RedisHDel;
 import com.redishash.annotation.RedisHGet;
+import com.redishash.annotation.RedisHMPut;
 import com.redishash.annotation.RedisHPut;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RedisHashAspect {
 	
 	
+	private static final String RESULT_VAL = "resultVal";
 	@Resource
 	@Qualifier("redisHashCache")
 	IHashCache cacher;
@@ -51,6 +57,12 @@ public class RedisHashAspect {
 	public void cutpointHDel() {
 		
 	}
+	
+	@Pointcut("@annotation(com.redishash.annotation.RedisHMPut)")
+	public void cutpointHMPut() {
+		
+	}
+	
 	
 	@Around("cutpointHGet()")
 	public Object cache(ProceedingJoinPoint point) {
@@ -88,7 +100,32 @@ public class RedisHashAspect {
         }
         return null;
     }
-	
+	@AfterReturning( value = "cutpointHMPut()", returning = "resultSet")
+	public void updateAll(JoinPoint point,List<?> resultSet) {
+		log.info("afterReturning, to save list batchly");
+		if(resultSet == null)
+			return;
+		Method method = ((MethodSignature) point.getSignature()).getMethod();
+		RedisHMPut cache = method.getAnnotation(RedisHMPut.class);
+		String cacheName = cache.cache();
+		
+		resultSet.stream().forEach(r ->{
+					
+			try {
+				String hashKey = parseKeyOfResult(cache.hashKey(),r);
+				
+				cacher.putObject(cacheName,hashKey,JSONUtils.serializeObject(r));
+			} catch (Exception e) {
+				
+				//e.printStackTrace();
+				log.debug("exception:", e);
+				log.error("error happens :{}",e.getMessage());
+			}
+			
+		});		
+		
+		
+	}
 	@After("cutpointHPut()")
 	public void update(JoinPoint point) {
 		Method method = ((MethodSignature) point.getSignature()).getMethod();
@@ -98,10 +135,10 @@ public class RedisHashAspect {
 		try {
 			cacher.putObject(cacheName,hashKey,JSONUtils.serializeObject(point.getArgs()[0]));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
-		// baseHashRedisTemplate.remove(key, hashKey);
+		
 	}
 
 	@After("cutpointHDel()")
@@ -113,7 +150,7 @@ public class RedisHashAspect {
 		String cacheName = cache.cache();
 		String hashKey = parseKey(cache.hashKey(), method, point.getArgs());
 		cacher.evictObject(cacheName,hashKey);
-		// baseHashRedisTemplate.remove(key, hashKey);
+		
 	}
 
 
@@ -122,12 +159,12 @@ public class RedisHashAspect {
      * 获取缓存的key
      * key 定义在注解上，支持SPEL表达式
      *
-     * @param key
+     * @param hashKey
      * @param method
      * @param args
      * @return
      */
-    private String parseKey(String key, Method method, Object[] args) {
+    private String parseKey(String hashKey, Method method, Object[] args) {
         // 获取被拦截方法参数名列表(使用Spring支持类库)
         LocalVariableTableParameterNameDiscoverer u = new LocalVariableTableParameterNameDiscoverer();
         String[] paraNameArr = u.getParameterNames(method);
@@ -139,8 +176,22 @@ public class RedisHashAspect {
         for (int i = 0; i < paraNameArr.length; i++) {
             context.setVariable(paraNameArr[i], args[i]);
         }
-        return parser.parseExpression(key).getValue(context, String.class);
+        return parser.parseExpression(hashKey).getValue(context, String.class);
     }
-
+    private String parseKeyOfResult(String hashKey,  Object arg) {
+    	final String prefix = "#"+RESULT_VAL+".";
+    	Assert.isTrue(hashKey.startsWith(prefix), "hashKey开头应是"+prefix);
+    	
+    	 ExpressionParser parser = new SpelExpressionParser();
+         // SPEL上下文
+         StandardEvaluationContext context = new StandardEvaluationContext();
+         // 把方法参数放入SPEL上下文中
+        
+          context.setVariable(RESULT_VAL, arg);
+         
+         return parser.parseExpression(hashKey).getValue(context, String.class);
+    	
+    	
+    }
 
 }
