@@ -27,9 +27,10 @@ public class TestRedisHashAnnotation {
 /*	@MockBean
 	IHashCache hashCache;*/
 	
-	@Autowired
-	DummyHashCache dummyCache;
-	
+	/*@Autowired
+	IHashCache dummyCache;
+	//DummyHashCache dummyCache;
+*/	
 	
 	@Component
 	public static class InnerRedis{
@@ -165,7 +166,7 @@ public class TestRedisHashAnnotation {
 		
 		assertNotNull(inner);		
 		
-		inner.delByKey("a");
+		inner.delByKey("abc");
 
 		
 	}

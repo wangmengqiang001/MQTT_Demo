@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -33,6 +34,7 @@ public class RedisHashAspect {
 	
 	
 	@Resource
+	@Qualifier("redisHashCache")
 	IHashCache cacher;
 	
 	@Pointcut("@annotation(com.redishash.annotation.RedisHGet)")
