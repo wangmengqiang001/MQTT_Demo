@@ -1,5 +1,6 @@
 package com.redishash.aop;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.nacos.client.utils.JSONUtils;
 import com.google.common.collect.Maps;
 import com.redishash.annotation.RedisHDel;
 import com.redishash.annotation.RedisHGet;
@@ -59,6 +61,8 @@ public class RedisHashAspect {
             RedisHGet cache = method.getAnnotation( RedisHGet.class);
             if (cache != null && cache.read()) {
             	
+            	Class<?> rtnType = method.getReturnType();
+            	
                 // 查询操作
                 String cacheName = cache.cache();
                 String hashKey = parseKey(cache.hashKey(), method, point.getArgs());
@@ -69,10 +73,13 @@ public class RedisHashAspect {
                     if (obj != null) {
                     	log.debug("执行方法:{} 完成, 写入缓存cacheName:{},hashKey:{},val:{}",
                     			method.getName(),cacheName,hashKey,obj);
-                    	cacher.putObject(cacheName,hashKey,obj);
+                    	
+                    	cacher.putObject(cacheName,hashKey,JSONUtils.serializeObject(obj));
                     	
          
                     }
+                }else {
+                	obj = JSONUtils.deserializeObject(obj.toString(), rtnType);
                 }
                 return obj;
             }
@@ -88,7 +95,12 @@ public class RedisHashAspect {
 		RedisHPut cache = method.getAnnotation(RedisHPut.class);
 		String cacheName = cache.cache();
 		String hashKey = parseKey(cache.hashKey(), method, point.getArgs());
-		cacher.putObject(cacheName,hashKey,point.getArgs()[0]);
+		try {
+			cacher.putObject(cacheName,hashKey,JSONUtils.serializeObject(point.getArgs()[0]));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// baseHashRedisTemplate.remove(key, hashKey);
 	}
 

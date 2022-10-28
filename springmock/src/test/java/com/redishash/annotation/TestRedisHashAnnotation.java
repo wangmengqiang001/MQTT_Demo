@@ -33,7 +33,7 @@ public class TestRedisHashAnnotation {
 */	
 	
 	@Component
-	public static class InnerRedis{
+	static class InnerRedis{
 		
 		@RedisHGet(hashKey = "#key", cache = "a")
 		public String findByKey(String key) {
