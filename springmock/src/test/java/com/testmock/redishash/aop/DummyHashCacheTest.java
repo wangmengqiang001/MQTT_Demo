@@ -1,9 +1,10 @@
-package com.redishash.annotation.aop;
+package com.testmock.redishash.aop;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.redishash.aop.DummyHashCache;
 
 class DummyHashCacheTest {
 	
