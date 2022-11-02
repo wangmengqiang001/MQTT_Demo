@@ -15,11 +15,8 @@ import org.redishash.annotation.RedisHPut;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.test.context.ActiveProfiles;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

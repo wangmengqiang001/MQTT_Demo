@@ -90,19 +90,19 @@ public class MqttPublishController /*implements MqttPublisherRest*/ {
 			}
 
 		} catch (MqttSecurityException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 			return e.getMessage();
 		} catch (MqttException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 			return e.getMessage();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 			return e.getMessage();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 			return e.getMessage();
 		}

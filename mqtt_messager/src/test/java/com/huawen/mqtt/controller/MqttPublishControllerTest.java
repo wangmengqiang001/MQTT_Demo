@@ -18,7 +18,6 @@ import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
@@ -26,7 +25,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.huawen.mqtt.inter.MqttGateway;
 
 import lombok.extern.slf4j.Slf4j;
@@ -85,13 +83,13 @@ class MqttPublishControllerTest {
 					clientInstance.disconnect();
 
 				} catch (MqttSecurityException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				} catch (MqttException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 	}
@@ -134,7 +132,7 @@ class MqttPublishControllerTest {
 		
 		AtomicInteger success = new AtomicInteger();
 		AtomicInteger fail = new AtomicInteger();
-		LinkedBlockingQueue<String> responseMsg = new LinkedBlockingQueue();
+		LinkedBlockingQueue<String> responseMsg = new LinkedBlockingQueue<String>();
 		
 		
 		for(int n=0; n<TOTAL; n++)
@@ -167,7 +165,7 @@ class MqttPublishControllerTest {
 					
 				} catch (Exception e) {
 					fail.incrementAndGet();
-					// TODO Auto-generated catch block
+				
 					e.printStackTrace();
 				}
 			});

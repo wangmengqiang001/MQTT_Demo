@@ -13,8 +13,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Resource;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.test.context.ActiveProfiles;
@@ -81,7 +79,7 @@ class MqttPublisherRestTest {
 		
 		AtomicInteger success = new AtomicInteger();
 		AtomicInteger fail = new AtomicInteger();
-		LinkedBlockingQueue<String> responseMsg = new LinkedBlockingQueue();
+		LinkedBlockingQueue<String> responseMsg = new LinkedBlockingQueue<String>();
 		
 		
 		for(int n=0; n<TOTAL; n++)
@@ -107,7 +105,7 @@ class MqttPublisherRestTest {
 					
 				} catch (Exception e) {
 					fail.incrementAndGet();
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 			});

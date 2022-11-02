@@ -16,19 +16,18 @@ public class ResponseCallback implements MqttCallback {
 
 	@Override
 	public void connectionLost(Throwable arg0) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void deliveryComplete(IMqttDeliveryToken arg0) {
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void messageArrived(String arg0, MqttMessage arg1) throws Exception {
-		// TODO Auto-generated method stub
+		
 		
 		//notify the message is received
 		wakeSignal.notify();

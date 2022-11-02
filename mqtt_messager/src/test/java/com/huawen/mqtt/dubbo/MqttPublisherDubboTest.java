@@ -2,8 +2,6 @@ package com.huawen.mqtt.dubbo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,7 +48,7 @@ class MqttPublisherDubboTest {
 		
 		AtomicInteger success = new AtomicInteger();
 		AtomicInteger fail = new AtomicInteger();
-		LinkedBlockingQueue<String> responseMsg = new LinkedBlockingQueue();
+		LinkedBlockingQueue<String> responseMsg = new LinkedBlockingQueue<String>();
 		
 		
 		for(int n=0; n<TOTAL; n++)
@@ -76,7 +74,7 @@ class MqttPublisherDubboTest {
 					
 				} catch (Exception e) {
 					fail.incrementAndGet();
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 			});

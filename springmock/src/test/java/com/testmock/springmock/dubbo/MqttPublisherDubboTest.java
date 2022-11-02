@@ -54,7 +54,7 @@ class MqttPublisherDubboTest {
 		
 		AtomicInteger success = new AtomicInteger();
 		AtomicInteger fail = new AtomicInteger();
-		LinkedBlockingQueue<String> responseMsg = new LinkedBlockingQueue();
+		LinkedBlockingQueue<String> responseMsg = new LinkedBlockingQueue<String>();
 		
 		
 		for(int n=0; n<TOTAL; n++)
@@ -80,7 +80,7 @@ class MqttPublisherDubboTest {
 					
 				} catch (Exception e) {
 					fail.incrementAndGet();
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 			});
